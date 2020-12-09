@@ -19,12 +19,10 @@ handle_centos() {
 		rpm rpm-build libxml2-devel gmp-devel log4cpp-devel mpir-devel \
 		gnuradio-devel python${PYTHON_VER}-devel
 
-	if [ "$TRAVIS" = "true" ] || [ "$INSIDE_DOCKER" = "1" ] ; then
-		for pkg in libiio libad9361-iio ; do
-			wget http://swdownloads.analog.com/cse/travis_builds/${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.rpm
-			sudo yum localinstall -y ./${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.rpm
-		done
-	fi
+	for pkg in libiio libad9361-iio ; do
+		wget http://swdownloads.analog.com/cse/travis_builds/${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.rpm
+		sudo yum localinstall -y ./${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.rpm
+	done
 }
 
 handle_centos_docker() {
@@ -43,12 +41,10 @@ handle_default() {
 		libusb-1.0-0-dev libxml2-dev tar bzip2 gzip \
 		libserialport-dev gnuradio-dev libpython${PYTHON_VER}-dev
 
-	if [ "$TRAVIS" = "true" ] || [ "$INSIDE_DOCKER" = "1" ] ; then
-		for pkg in libiio libad9361-iio ; do
-			wget http://swdownloads.analog.com/cse/travis_builds/${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.deb
-			sudo dpkg -i ./${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.deb
-		done
-	fi
+	for pkg in libiio libad9361-iio ; do
+		wget http://swdownloads.analog.com/cse/travis_builds/${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.deb
+		sudo dpkg -i ./${LIBIIO_BRANCH}_latest_${pkg}${LDIST}.deb
+	done
 }
 
 OS_TYPE=${OS_TYPE:-default}
