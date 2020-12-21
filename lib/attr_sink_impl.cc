@@ -89,7 +89,9 @@ namespace gr {
       }
 
       message_port_register_in(pmt::mp("attr"));
-      set_msg_handler(pmt::mp("attr"), boost::bind(&attr_sink_impl::write_attribute, this, boost::placeholders::_1));
+      set_msg_handler(pmt::mp("attr"), [this](pmt::pmt_t msg) {
+        this->attr_sink_impl::write_attribute(msg);
+       });
 
     }
 
