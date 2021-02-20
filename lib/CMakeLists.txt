@@ -87,11 +87,8 @@ endif(APPLE)
 ########################################################################
 # Install built library files
 ########################################################################
-include(GrMiscUtils)
 GR_LIBRARY_FOO(gnuradio-iio)
 
 set_target_properties(gnuradio-iio PROPERTIES
-	VERSION ${GR_IIO_VERSION}
-	SOVERSION ${GR_IIO_VERSION_MAJOR}
 	DEFINE_SYMBOL "gnuradio_iio_EXPORTS"
 )

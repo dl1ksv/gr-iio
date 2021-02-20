@@ -24,12 +24,6 @@
 cmake_minimum_required(VERSION 3.8)
 project(gr-iio CXX C)
 
-set(VERSION_INFO_MAJOR_VERSION 0)
-set(VERSION_INFO_API_COMPAT    0)
-set(VERSION_INFO_MINOR_VERSION 3)
-set(VERSION_INFO_MAINT_VERSION git)
-set(VERSION_INFO_VERSION ${GR_IIO_VERSION_MAJOR}.${GR_IIO_VERSION_MINOR})
-
 # Install to PyBOMBS target prefix if defined
 if(DEFINED ENV{PYBOMBS_PREFIX})
     set(CMAKE_INSTALL_PREFIX $ENV{PYBOMBS_PREFIX})
@@ -44,15 +38,29 @@ endif(NOT CMAKE_BUILD_TYPE)
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "")
 
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake/Modules)
+########################################################################
+# Find gnuradio
+########################################################################
+set(GR_COMPONENTS blocks analog volk pmt filter fft)
+find_package(Gnuradio "3.9" COMPONENTS ${GR_COMPONENTS})
+if(NOT Gnuradio_FOUND)
+    message(FATAL_ERROR "Unable to find GNURadio")
+endif(NOT Gnuradio_FOUND)
 
 cmake_policy(SET CMP0011 NEW)
-
+set(VERSION_MAJOR 1)
+set(VERSION_API   3)
+set(VERSION_ABI   9)
+set(VERSION_PATCH 0)
+include(GrVersion) #setup version info
+include(GrPlatform) #define LIB_SUFFIX
 # Enable generation of compile_commands.json for code completion engines
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ########################################################################
 # Compiler specific setup
 ########################################################################
+include(GrMiscUtils)
 if((CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
     CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     AND NOT WIN32)
@@ -79,17 +87,6 @@ ELSEIF(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
 ELSE()
     message(WARNING "C standard could not be set because compiler is not GNU, Clang or MSVC.")
 ENDIF()
-
-########################################################################
-# Find packages
-########################################################################
-set(GR_COMPONENTS blocks analog volk pmt filter fft)
-find_package(Gnuradio "3.9" COMPONENTS ${GR_COMPONENTS})
-if(NOT Gnuradio_FOUND)
-    message(FATAL_ERROR "Unable to find GNURadio")
-endif(NOT Gnuradio_FOUND)
-include(GrVersion)
-include(GrPlatform) #define LIB_SUFFIX
 
 ########################################################################
 # Install directories
@@ -214,3 +211,8 @@ add_subdirectory(grc)
 install(FILES cmake/Modules/iioConfig.cmake
     DESTINATION ${CMAKE_MODULES_DIR}/iio
 )
+########################################################################
+# Print summary
+########################################################################
+message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
