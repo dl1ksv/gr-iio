@@ -6,6 +6,6 @@ includedir=${prefix}/@GR_INCLUDE_DIR@
 Name: gnuradio-iio
 Description: GNU Radio blocks for the IIO devices
 Requires: gnuradio-runtime gnuradio-analog gnuradio-blocks
-Version: @GR_IIO_VERSION@
+Version: @VERSION@
 Libs: -L${libdir} -lgnuradio-iio -lgnuradio-analog -lgnuradio-blocks
 Cflags: -I${includedir}
